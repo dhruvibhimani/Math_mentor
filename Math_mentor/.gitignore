@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build and test artifacts
+.pytest_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Local databases and vector stores
+math_mentor_memory.db
+chroma_db/
+
+# Model and tool caches
+.cache/
+.paddlex/
+.paddleocr/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

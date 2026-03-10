@@ -1,0 +1,19 @@
+langchain
+langchain-core
+langchain-community
+langchain-groq
+langchain-huggingface
+langchain-text-splitters
+langgraph
+pypdf
+pymupdf
+chromadb
+python-dotenv
+sentence-transformers
+streamlit
+sympy
+Pillow
+# Optional input backends:
+# openai-whisper
+# paddleocr
+# paddlepaddle
