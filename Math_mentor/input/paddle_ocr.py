@@ -37,7 +37,6 @@ def _build_ocr_engine(use_legacy_fallback: bool = False):
     common_kwargs = {
         "lang": "en",
         "ocr_version": "PP-OCRv3",
-        "show_log": False,
     }
     if use_legacy_fallback:
         common_kwargs.update(
