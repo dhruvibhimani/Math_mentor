@@ -11,15 +11,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from typing import Tuple
 
-try:
-    from dotenv import load_dotenv
-except ImportError:  # pragma: no cover - optional in cloud deploys
-    def load_dotenv(*_args, **_kwargs):
-        return False
-
+from config import bootstrap_runtime
 from graph.langgraph_workflow import run_pipeline
 from input.paddle_ocr import extract_text_from_image
 from input.whisper_asr import transcribe_audio
@@ -59,7 +53,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+    bootstrap_runtime()
 
     raw_problem, input_mode = _read_problem_from_args(args)
     if not raw_problem:

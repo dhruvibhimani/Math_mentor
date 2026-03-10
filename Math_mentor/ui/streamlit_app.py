@@ -16,15 +16,10 @@ import time
 import streamlit as st
 from PIL import Image
 
-try:
-    from dotenv import load_dotenv
-except ImportError:  # pragma: no cover - optional in cloud deploys
-    def load_dotenv(*_args, **_kwargs):
-        return False
-
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 
+from config import bootstrap_runtime
 from graph.langgraph_workflow import run_pipeline
 from input.paddle_ocr import extract_text_from_image
 from input.whisper_asr import transcribe_audio
@@ -38,7 +33,7 @@ from memory.memory_store import (
     search_similar,
 )
 
-load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
+bootstrap_runtime()
 
 st.set_page_config(
     page_title="Math Mentor",
