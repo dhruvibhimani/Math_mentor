@@ -18,27 +18,31 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 DEFAULT_MODELS = {
     "PARSER_MODEL": "llama-3.1-8b-instant",
     "ROUTER_MODEL": "llama-3.1-8b-instant",
-    "SOLVER_MODEL": "llama-3.1-70b-versatile",
+    "SOLVER_MODEL": "llama-3.3-70b-versatile",
     "VERIFIER_MODEL": "llama-3.3-70b-versatile",
     "EXPLAINER_MODEL": "llama-3.1-8b-instant",
 }
 
 
 def load_runtime_env() -> None:
-    """Load local dotenv values when present and normalize model defaults."""
+    """Load local dotenv values when present."""
     load_dotenv(PROJECT_ROOT / ".env")
 
-    for key, default in DEFAULT_MODELS.items():
-        if not os.getenv(key):
-            os.environ[key] = default
+def get_config(key: str, default: str | None = None) -> str | None:
+    """Read configuration from env, then the provided default."""
+    value = os.getenv(key)
+    if value:
+        return value
+
+    return default
 
 
 def require_groq_api_key() -> str:
     """Return the Groq API key or raise a clear startup error."""
-    api_key = os.getenv("GROQ_API_KEY", "").strip()
+    api_key = (get_config("GROQ_API_KEY", "") or "").strip()
     if not api_key:
         raise RuntimeError(
-            "Missing GROQ_API_KEY. Set it in the environment or in the project .env file."
+            "Missing GROQ_API_KEY. Set it in environment variables or the project .env file."
         )
     if not api_key.startswith("gsk_"):
         raise RuntimeError(
@@ -56,7 +60,7 @@ def bootstrap_runtime() -> str:
 def groq_client_kwargs(model_env_var: str, default_model: str, temperature: float) -> dict:
     """Build a normalized ChatGroq configuration."""
     return {
-        "model": os.getenv(model_env_var, default_model),
+        "model": get_config(model_env_var, default_model),
         "temperature": temperature,
         "api_key": require_groq_api_key(),
     }
