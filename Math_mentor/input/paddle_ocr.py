@@ -15,6 +15,7 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _LOCAL_CACHE_ROOT = os.path.join(_PROJECT_ROOT, ".cache")
 _LOCAL_PADDLE_HOME = os.path.join(_LOCAL_CACHE_ROOT, "paddle")
 _OCR_ENGINE = None
+_OCR_INIT_ERROR = None
 
 
 def _ensure_paddle_env():
@@ -52,6 +53,7 @@ def _build_ocr_engine(use_legacy_fallback: bool = False):
 def _get_ocr_engine():
     """Initialize PaddleOCR once and reuse it."""
     global _OCR_ENGINE
+    global _OCR_INIT_ERROR
 
     if _OCR_ENGINE is not None:
         return _OCR_ENGINE
@@ -59,15 +61,23 @@ def _get_ocr_engine():
     try:
         _ensure_paddle_env()
         _OCR_ENGINE = _build_ocr_engine()
+        _OCR_INIT_ERROR = None
         return _OCR_ENGINE
-    except ImportError:
+    except ImportError as exc:
+        _OCR_INIT_ERROR = f"PaddleOCR import failed: {exc}"
         return None
-    except Exception:
+    except Exception as exc:
+        _OCR_INIT_ERROR = f"PaddleOCR initialization failed: {exc}"
         try:
             _ensure_paddle_env()
             _OCR_ENGINE = _build_ocr_engine(use_legacy_fallback=True)
+            _OCR_INIT_ERROR = None
             return _OCR_ENGINE
-        except Exception:
+        except Exception as retry_exc:
+            _OCR_INIT_ERROR = (
+                f"PaddleOCR initialization failed: {exc}. "
+                f"Legacy fallback also failed: {retry_exc}"
+            )
             return None
 
 
@@ -93,7 +103,10 @@ def run_paddle_ocr(file_path: str) -> Dict[str, Any]:
             "overall_confidence": 0.0,
             "doc_language": "en",
             "duration_ms": 0,
-            "error": "PaddleOCR is not installed. Install with: pip install paddleocr paddlepaddle",
+            "error": _OCR_INIT_ERROR or (
+                "PaddleOCR could not be initialized. "
+                "Verify paddleocr and paddlepaddle are installed and compatible with the deployment runtime."
+            ),
         }
 
     start = time.time()
