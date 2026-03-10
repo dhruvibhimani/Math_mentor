@@ -1,9 +1,9 @@
-langchain
-langchain-core
-langchain-community
-langchain-groq
-langchain-huggingface
-langchain-text-splitters
+langchain==0.3.21
+langchain-core==0.3.49
+langchain-community==0.3.20
+langchain-groq==0.3.2
+langchain-huggingface==0.1.2
+langchain-text-splitters==0.3.7
 langgraph
 pypdf
 pymupdf
@@ -14,5 +14,5 @@ streamlit
 sympy
 Pillow
 openai-whisper
-paddleocr
-paddlepaddle
+paddleocr==3.4.0
+paddlepaddle==3.3.0
