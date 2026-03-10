@@ -3,11 +3,11 @@ Solver Agent - Computes answers for math problems, grounded by retrieval and too
 """
 
 import json
-import os
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 
+from config import groq_client_kwargs
 from mcp_client.client import call_mcp_tool_sync
 
 
@@ -113,7 +113,7 @@ def solve_problem(state: dict) -> dict:
             "Correct the mathematical issues and keep citations grounded."
         )
 
-    llm = ChatGroq(model=os.getenv("SOLVER_MODEL", "llama-3.1-70b-versatile"), temperature=0)
+    llm = ChatGroq(**groq_client_kwargs("SOLVER_MODEL", "llama-3.1-70b-versatile", 0))
     response = (SOLVER_PROMPT | llm).invoke(
         {
             "knowledge_context": knowledge,

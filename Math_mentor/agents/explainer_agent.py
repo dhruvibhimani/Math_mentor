@@ -3,11 +3,11 @@ Explainer Agent - Produces grounded explanations for math and concept queries, a
 """
 
 import json
-import os
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 
+from config import groq_client_kwargs
 
 EXPLAINER_PROMPT = ChatPromptTemplate.from_messages([
     (
@@ -75,7 +75,7 @@ def explain_solution(state: dict) -> dict:
     verification_summary = json.dumps(verification, ensure_ascii=True, indent=2) if verification else "Not applicable."
     knowledge_context = state.get("retrieved_docs", "No reliable source found in knowledge base.")
 
-    llm = ChatGroq(model=os.getenv("EXPLAINER_MODEL", "llama-3.1-8b-instant"), temperature=0.2)
+    llm = ChatGroq(**groq_client_kwargs("EXPLAINER_MODEL", "llama-3.1-8b-instant", 0.2))
     response = (EXPLAINER_PROMPT | llm).invoke(
         {
             "knowledge_context": knowledge_context,

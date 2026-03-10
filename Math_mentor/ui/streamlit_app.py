@@ -20,6 +20,9 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 
 from config import bootstrap_runtime
+
+bootstrap_runtime()
+
 from graph.langgraph_workflow import run_pipeline
 from input.paddle_ocr import extract_text_from_image
 from input.whisper_asr import transcribe_audio
@@ -32,8 +35,6 @@ from memory.memory_store import (
     save_interaction,
     search_similar,
 )
-
-bootstrap_runtime()
 
 st.set_page_config(
     page_title="Math Mentor",

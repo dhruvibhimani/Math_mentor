@@ -3,11 +3,11 @@ Parser Agent - Normalizes multimodal user input into a compact structured form.
 """
 
 import json
-import os
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 
+from config import groq_client_kwargs
 
 PARSER_PROMPT = ChatPromptTemplate.from_messages([
     (
@@ -67,7 +67,7 @@ def parse_problem(state: dict) -> dict:
         }
         return {**state, "parsed_problem": parsed, "needs_clarification": True}
 
-    llm = ChatGroq(model=os.getenv("PARSER_MODEL", "llama-3.1-8b-instant"), temperature=0)
+    llm = ChatGroq(**groq_client_kwargs("PARSER_MODEL", "llama-3.1-8b-instant", 0))
     response = (PARSER_PROMPT | llm).invoke({"raw_problem": raw_problem})
     parsed = _extract_json(response.content)
 

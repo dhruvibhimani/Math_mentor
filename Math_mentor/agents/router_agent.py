@@ -3,11 +3,11 @@ Router Agent - Chooses between math problem solving, concept explanation, and no
 """
 
 import json
-import os
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 
+from config import groq_client_kwargs
 
 ROUTER_PROMPT = ChatPromptTemplate.from_messages([
     (
@@ -61,7 +61,7 @@ def _extract_json(content: str) -> dict | None:
 def route_problem(state: dict) -> dict:
     parsed = state.get("parsed_problem", {})
 
-    llm = ChatGroq(model=os.getenv("ROUTER_MODEL", "llama-3.1-8b-instant"), temperature=0)
+    llm = ChatGroq(**groq_client_kwargs("ROUTER_MODEL", "llama-3.1-8b-instant", 0))
     response = (ROUTER_PROMPT | llm).invoke({"parsed_problem": json.dumps(parsed, ensure_ascii=True, indent=2)})
     routing = _extract_json(response.content)
 

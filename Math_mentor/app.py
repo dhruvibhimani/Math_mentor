@@ -14,6 +14,9 @@ import json
 from typing import Tuple
 
 from config import bootstrap_runtime
+
+bootstrap_runtime()
+
 from graph.langgraph_workflow import run_pipeline
 from input.paddle_ocr import extract_text_from_image
 from input.whisper_asr import transcribe_audio
@@ -52,8 +55,6 @@ def main() -> int:
         help="Print full pipeline output as JSON (default prints explanation only).",
     )
     args = parser.parse_args()
-
-    bootstrap_runtime()
 
     raw_problem, input_mode = _read_problem_from_args(args)
     if not raw_problem:

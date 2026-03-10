@@ -8,10 +8,10 @@ Performs:
 4. Returns structured citations for each used formula/chunk
 """
 
-import os
 import json
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
+from config import groq_client_kwargs
 from rag.vector_store import similarity_search_with_scores, get_retriever
 
 
@@ -88,10 +88,7 @@ def agentic_retrieve(
 
     # 3. LLM re-ranking
     try:
-        llm = ChatGroq(
-            model=os.getenv("ROUTER_MODEL", "llama-3.1-8b-instant"),
-            temperature=0,
-        )
+        llm = ChatGroq(**groq_client_kwargs("ROUTER_MODEL", "llama-3.1-8b-instant", 0))
         chain = RERANK_PROMPT | llm
         response = chain.invoke({"problem": query, "chunks_text": chunks_text})
         content = response.content.strip()

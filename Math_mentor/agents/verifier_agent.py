@@ -3,11 +3,11 @@ Verifier Agent - Validates mathematical solutions before explanation.
 """
 
 import json
-import os
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 
+from config import groq_client_kwargs
 from mcp_client.client import call_mcp_tool_sync
 
 
@@ -96,7 +96,7 @@ def verify_solution(state: dict) -> dict:
     )
     numerical_check = _build_check_context(parsed, solution, routing)
 
-    llm = ChatGroq(model=os.getenv("VERIFIER_MODEL", "llama-3.3-70b-versatile"), temperature=0)
+    llm = ChatGroq(**groq_client_kwargs("VERIFIER_MODEL", "llama-3.3-70b-versatile", 0))
     response = (VERIFIER_PROMPT | llm).invoke(
         {
             "numerical_check": numerical_check,

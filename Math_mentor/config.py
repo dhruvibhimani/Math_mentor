@@ -51,3 +51,12 @@ def bootstrap_runtime() -> str:
     """Load environment configuration and validate required secrets."""
     load_runtime_env()
     return require_groq_api_key()
+
+
+def groq_client_kwargs(model_env_var: str, default_model: str, temperature: float) -> dict:
+    """Build a normalized ChatGroq configuration."""
+    return {
+        "model": os.getenv(model_env_var, default_model),
+        "temperature": temperature,
+        "api_key": require_groq_api_key(),
+    }
