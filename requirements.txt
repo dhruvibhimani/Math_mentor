@@ -13,7 +13,6 @@ sentence-transformers
 streamlit
 sympy
 Pillow
-# Optional input backends:
-# openai-whisper
-# paddleocr
-# paddlepaddle
+openai-whisper
+paddleocr
+paddlepaddle
