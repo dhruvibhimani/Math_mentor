@@ -14,8 +14,13 @@ import sys
 import time
 
 import streamlit as st
-from dotenv import load_dotenv
 from PIL import Image
+
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - optional in cloud deploys
+    def load_dotenv(*_args, **_kwargs):
+        return False
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)

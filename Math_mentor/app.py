@@ -14,7 +14,11 @@ import json
 import os
 from typing import Tuple
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - optional in cloud deploys
+    def load_dotenv(*_args, **_kwargs):
+        return False
 
 from graph.langgraph_workflow import run_pipeline
 from input.paddle_ocr import extract_text_from_image
