@@ -4,6 +4,7 @@ PaddleOCR wrapper - Extract text from math problem images.
 
 import io
 import os
+import inspect
 import tempfile
 import time
 from typing import Any, Dict, List, Union
@@ -89,6 +90,9 @@ def _run_ocr(ocr, file_path: str):
     """Prefer the classic OCR API over the newer predict pipeline."""
     if hasattr(ocr, "ocr"):
         return ocr.ocr(file_path, cls=False), "legacy"
+    predict_signature = inspect.signature(ocr.predict)
+    if "cls" in predict_signature.parameters:
+        return ocr.predict(file_path, cls=False), "predict"
     return ocr.predict(file_path), "predict"
 
 
